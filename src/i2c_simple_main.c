@@ -55,15 +55,15 @@
 #define NACK_VAL                           0x1              /*!< I2C nack value */
 
 // MMA8451 defines
-#define MMA8451_I2C_ADDR		0x1C
+#define MMA8451_I2C_ADDR		0x22
 
-#define MMA8451_OUT_X_MSB		0x01
-#define WHO_AM_I_REG			0x0D
-#define XYZ_DATA_CFG_REG		0x0E
-#define	CTRL_REG1				0x2A
-#define	CTRL_REG2				0x2B
-#define	CTRL_REG3				0x2C
-#define	CTRL_REG4				0x2D
+#define MMA8451_OUT_X_MSB		0x00
+#define WHO_AM_I_REG			0x01
+#define XYZ_DATA_CFG_REG		0x0
+#define	CTRL_REG1				0x06
+#define	CTRL_REG2				0x07
+#define	CTRL_REG3				0x08
+#define	CTRL_REG4				0x09
 #define	CTRL_REG5				0x2E
 
 #define ASLP_RATE_20MS			0x00
@@ -173,13 +173,13 @@ static void mma8451_init()
 	// Before re-configuring, must enter 'standby' mode
 	rdMMA845x( CTRL_REG1, &(val), 1 );
 	val &= ~(ACTIVE_MASK);
-	wrMMA845x(CTRL_REG1, &(val), 1 );
+	//wrMMA845x(CTRL_REG1, &(val), 1 );
 
 	rdMMA845x(WHO_AM_I_REG, &(val), 1);
-	if (val == 0x1A) {
+	if (val == 0xA0) {
 		ESP_LOGI( TAG, "MMA8245x ID:0x%X (ok)", val );
 	} else {
-		ESP_LOGE( TAG, "MMA8245x ID:0x%X !!!! (NOT correct; should be 0x1A)", val );
+		ESP_LOGE( TAG, "MMA8245x ID:0x%X !!!! (NOT correct; should be 0xA0)", val );
 	}
 
 	/*
@@ -189,35 +189,35 @@ static void mma8451_init()
 	**    - Full Scale of +/-2g
 	*/
 //	IIC_RegWrite(SlaveAddressIIC, CTRL_REG1, ASLP_RATE_20MS+DATA_RATE_5MS);
-	val = (ASLP_RATE_20MS + DATA_RATE_80MS);
-	wrMMA845x(CTRL_REG1, &(val), 1 );
+	//val = (ASLP_RATE_20MS + DATA_RATE_80MS);
+	//wrMMA845x(CTRL_REG1, &(val), 1 );
 
 	// configure 2G full scale, High_Pass_Filter disabled
-	val = (FULL_SCALE_2G);
-	wrMMA845x(XYZ_DATA_CFG_REG, &(val), 1 );
+	//val = (FULL_SCALE_2G);
+	//wrMMA845x(XYZ_DATA_CFG_REG, &(val), 1 );
 
 	// Setup Hi-Res mode (14-bit)
-	rdMMA845x( CTRL_REG2, &(val), 1 );
-	val &= ~(MODS_MASK);
-	val |= (MODS1_MASK);
-	wrMMA845x(CTRL_REG2, &(val), 1 );
+	///rdMMA845x( CTRL_REG2, &(val), 1 );
+	//val &= ~(MODS_MASK);
+	//val |= (MODS1_MASK);
+	//wrMMA845x(CTRL_REG2, &(val), 1 );
 
 	// Configure the INT pins for Open Drain and Active Low
-	val = (PP_OD_MASK);
-	wrMMA845x(CTRL_REG3, &(val), 1);
+	//val = (PP_OD_MASK);
+	//wrMMA845x(CTRL_REG3, &(val), 1);
 
 	// Enable the DRDY Interrupt
-	val = (INT_EN_DRDY_MASK);
-	wrMMA845x(CTRL_REG4, &(val), 1);
+	//val = (INT_EN_DRDY_MASK);
+	///wrMMA845x(CTRL_REG4, &(val), 1);
 
 	// Set the DRDY Interrupt to INT1
-	val = (INT_CFG_DRDY_MASK);
-	wrMMA845x(CTRL_REG5, &(val), 1);
+	//val = (INT_CFG_DRDY_MASK);
+	//wrMMA845x(CTRL_REG5, &(val), 1);
 
 	// reconfig done, make active
-	rdMMA845x( CTRL_REG1, &(val), 1 );
-	val |= (ACTIVE_MASK);
-	wrMMA845x(CTRL_REG1, &(val), 1 );
+	//rdMMA845x( CTRL_REG1, &(val), 1 );
+	//val |= (ACTIVE_MASK);
+	//wrMMA845x(CTRL_REG1, &(val), 1 );
 }
 
 /**
